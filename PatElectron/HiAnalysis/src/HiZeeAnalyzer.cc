@@ -135,14 +135,17 @@ private:
   TClonesArray* Reco_QQ_4mom;
   TClonesArray* Reco_QQ_SC_4mom;
   TClonesArray* Reco_QQ_Tk_4mom;
+  TClonesArray* Reco_QQ_ClTk_4mom;
 
   TClonesArray* Reco_QQ_elepl_4mom;
   TClonesArray* Reco_QQ_elepl_SC_4mom;
   TClonesArray* Reco_QQ_elepl_Tk_4mom;
+  TClonesArray* Reco_QQ_elepl_ClTk_4mom;
 
   TClonesArray* Reco_QQ_elemi_4mom;
   TClonesArray* Reco_QQ_elemi_SC_4mom;
   TClonesArray* Reco_QQ_elemi_Tk_4mom;
+  TClonesArray* Reco_QQ_elemi_ClTk_4mom;
 
   TClonesArray* Gen_ele_4mom;
   TClonesArray* Gen_ele_3vec;
@@ -176,6 +179,13 @@ private:
   float Reco_QQ_elepl_ep[10000];    // Vector of ep
   float Reco_QQ_elepl_eseedp[10000];     // Vector of eseedp
   float Reco_QQ_elepl_eelepout[10000];    // Vector of eelepout
+  float Reco_QQ_elepl_ecalE[10000];    // Vector of ecalE
+  float Reco_QQ_elepl_trackP[10000];    // Vector of trackP
+  float Reco_QQ_elepl_iso03Tk[10000];    // Vector of iso03Tk
+  float Reco_QQ_elepl_iso03Ecal[10000];    // Vector of iso03Ecal
+  float Reco_QQ_elepl_iso03Hcal[10000];    // Vector of iso03Hcal
+  float Reco_QQ_elepl_dxy[10000];    // Vector of dxy
+  float Reco_QQ_elepl_dz[10000];    // Vector of dz
 	
   int Reco_QQ_elemi_charge[10000];
   float Reco_QQ_elemi_he[10000]; //  h/e: keep < 0.15 (pp); keep < 0.2 (PbPb)
@@ -186,6 +196,13 @@ private:
   float Reco_QQ_elemi_ep[10000];    // Vector of ep
   float Reco_QQ_elemi_eseedp[10000];     // Vector of eseedp
   float Reco_QQ_elemi_eelepout[10000];    // Vector of eelepout
+  float Reco_QQ_elemi_ecalE[10000];    // Vector of ecalE
+  float Reco_QQ_elemi_trackP[10000];    // Vector of trackP
+  float Reco_QQ_elemi_iso03Tk[10000];    // Vector of iso03Tk
+  float Reco_QQ_elemi_iso03Ecal[10000];    // Vector of iso03Ecal
+  float Reco_QQ_elemi_iso03Hcal[10000];    // Vector of iso03Hcal
+  float Reco_QQ_elemi_dxy[10000];    // Vector of dxy
+  float Reco_QQ_elemi_dz[10000];    // Vector of dz
 
   int Reco_ele_size;           // Number of reconstructed electrons
   int Reco_ele_trig[100];      // Vector of trigger bits matched to the electrons
@@ -506,6 +523,36 @@ HiZeeAnalyzer::fillTreeZ(int iSign, int count) {
   const reco::GsfTrackRef track1 = electron1->gsfTrack();
   const reco::GsfTrackRef track2 = electron2->gsfTrack();
 
+  const reco::TrackRef cl_track1 = electron1->closestCtfTrackRef();
+  const reco::TrackRef cl_track2 = electron2->closestCtfTrackRef();
+
+  double cl_px1, cl_py1, cl_pz1, cl_p1;
+  double cl_px2, cl_py2, cl_pz2, cl_p2;
+
+  if (cl_track1.isNonnull()) {
+    cl_px1 = cl_track1->px();
+    cl_py1 = cl_track1->py();
+    cl_pz1 = cl_track1->pz();
+    cl_p1 = cl_track1->p();
+  } else {
+    cl_px1 = track1->px();
+    cl_py1 = track1->py();
+    cl_pz1 = track1->pz();
+    cl_p1 = track1->p();
+  }
+
+  if (cl_track2.isNonnull()) {
+    cl_px2 = cl_track2->px();
+    cl_py2 = cl_track2->py();
+    cl_pz2 = cl_track2->pz();
+    cl_p2 = cl_track2->p();
+  } else {
+    cl_px2 = track2->px();
+    cl_py2 = track2->py();
+    cl_pz2 = track2->pz();
+    cl_p2 = track2->p();
+  }
+
   math::XYZPoint v(0, 0, 0);
 
   math::XYZVector sc1 = electron1->superCluster()->energy() * (electron1->superCluster()->position() - v).unit();
@@ -517,10 +564,12 @@ HiZeeAnalyzer::fillTreeZ(int iSign, int count) {
   TLorentzVector vElectron1 = lorentzMomentum(electron1->p4());
   TLorentzVector vElectron1_SC(sc1.x(),sc1.y(),sc1.z(),t);
   TLorentzVector vElectron1_Tk(track1->px(),track1->py(),track1->pz(),track1->p());
+  TLorentzVector vElectron1_ClTk(cl_px1,cl_py1,cl_pz1,cl_p1);
 
   TLorentzVector vElectron2 = lorentzMomentum(electron2->p4());
   TLorentzVector vElectron2_SC(sc2.x(),sc2.y(),sc2.z(),u);
   TLorentzVector vElectron2_Tk(track2->px(),track2->py(),track2->pz(),track2->p());
+  TLorentzVector vElectron2_ClTk(cl_px2,cl_py2,cl_pz2,cl_p2);
 
 	const reco::GsfElectron *electron_pl;
 	const reco::GsfElectron *electron_mi;
@@ -530,10 +579,12 @@ HiZeeAnalyzer::fillTreeZ(int iSign, int count) {
     new((*Reco_QQ_elepl_4mom)[Reco_QQ_size])TLorentzVector(vElectron1);
     new((*Reco_QQ_elepl_SC_4mom)[Reco_QQ_size])TLorentzVector(vElectron1_SC);
     new((*Reco_QQ_elepl_Tk_4mom)[Reco_QQ_size])TLorentzVector(vElectron1_Tk);
+    new((*Reco_QQ_elepl_ClTk_4mom)[Reco_QQ_size])TLorentzVector(vElectron1_ClTk);
 
     new((*Reco_QQ_elemi_4mom)[Reco_QQ_size])TLorentzVector(vElectron2);
     new((*Reco_QQ_elemi_SC_4mom)[Reco_QQ_size])TLorentzVector(vElectron2_SC);
     new((*Reco_QQ_elemi_Tk_4mom)[Reco_QQ_size])TLorentzVector(vElectron2_Tk);
+    new((*Reco_QQ_elemi_ClTk_4mom)[Reco_QQ_size])TLorentzVector(vElectron2_ClTk);
 
 		Reco_QQ_elepl_charge[Reco_QQ_size] = electron1->charge();
 		Reco_QQ_elemi_charge[Reco_QQ_size] = electron2->charge();
@@ -545,10 +596,12 @@ HiZeeAnalyzer::fillTreeZ(int iSign, int count) {
     new((*Reco_QQ_elepl_4mom)[Reco_QQ_size])TLorentzVector(vElectron2);
     new((*Reco_QQ_elepl_SC_4mom)[Reco_QQ_size])TLorentzVector(vElectron2_SC);
     new((*Reco_QQ_elepl_Tk_4mom)[Reco_QQ_size])TLorentzVector(vElectron2_Tk);
+    new((*Reco_QQ_elepl_ClTk_4mom)[Reco_QQ_size])TLorentzVector(vElectron2_ClTk);
 
     new((*Reco_QQ_elemi_4mom)[Reco_QQ_size])TLorentzVector(vElectron1);
     new((*Reco_QQ_elemi_SC_4mom)[Reco_QQ_size])TLorentzVector(vElectron1_SC);
     new((*Reco_QQ_elemi_Tk_4mom)[Reco_QQ_size])TLorentzVector(vElectron1_Tk);
+    new((*Reco_QQ_elemi_ClTk_4mom)[Reco_QQ_size])TLorentzVector(vElectron1_ClTk);
 
 		Reco_QQ_elepl_charge[Reco_QQ_size] = electron2->charge();
 		Reco_QQ_elemi_charge[Reco_QQ_size] = electron1->charge();
@@ -565,7 +618,14 @@ HiZeeAnalyzer::fillTreeZ(int iSign, int count) {
   Reco_QQ_elepl_ep[Reco_QQ_size] = electron_pl->eSuperClusterOverP();
   Reco_QQ_elepl_eseedp[Reco_QQ_size] = electron_pl->eSeedClusterOverP();
   Reco_QQ_elepl_eelepout[Reco_QQ_size] = electron_pl->eEleClusterOverPout();	
-	
+  Reco_QQ_elepl_ecalE[Reco_QQ_size] = electron_pl->ecalEnergy();
+  Reco_QQ_elepl_trackP[Reco_QQ_size] = electron_pl->ecalEnergy() / electron_pl->eSuperClusterOverP();
+  Reco_QQ_elepl_iso03Tk[Reco_QQ_size] = electron_pl->dr03TkSumPt();
+  Reco_QQ_elepl_iso03Ecal[Reco_QQ_size] = electron_pl->dr03EcalRecHitSumEt();
+  Reco_QQ_elepl_iso03Hcal[Reco_QQ_size] = electron_pl->dr03HcalTowerSumEt();
+  Reco_QQ_elepl_dxy[Reco_QQ_size] = electron_pl->gsfTrack()->dxy(RefVtx);
+  Reco_QQ_elepl_dz[Reco_QQ_size] = electron_pl->gsfTrack()->dz(RefVtx);
+
   Reco_QQ_elemi_he[Reco_QQ_size] = electron_mi->hadronicOverEm(); //  h/e: keep < 0.15 (pp); keep < 0.2 (PbPb)
   Reco_QQ_elemi_sigmaietaieta[Reco_QQ_size] = electron_mi->sigmaIetaIeta(); // shower shape variable: keep < 0.01 EB; keep < 0.035 EE (pPb)
   Reco_QQ_elemi_deltaetain[Reco_QQ_size] = electron_mi->deltaEtaSuperClusterTrackAtVtx(); // difference in eta between supercluster and inner tracker: keep < 0.03
@@ -574,14 +634,23 @@ HiZeeAnalyzer::fillTreeZ(int iSign, int count) {
   Reco_QQ_elemi_ep[Reco_QQ_size] = electron_mi->eSuperClusterOverP();
   Reco_QQ_elemi_eseedp[Reco_QQ_size] = electron_mi->eSeedClusterOverP();
   Reco_QQ_elemi_eelepout[Reco_QQ_size] = electron_mi->eEleClusterOverPout();
+  Reco_QQ_elemi_ecalE[Reco_QQ_size] = electron_mi->ecalEnergy();
+  Reco_QQ_elemi_trackP[Reco_QQ_size] = electron_mi->ecalEnergy() / electron_pl->eSuperClusterOverP();
+  Reco_QQ_elemi_iso03Tk[Reco_QQ_size] = electron_mi->dr03TkSumPt();
+  Reco_QQ_elemi_iso03Ecal[Reco_QQ_size] = electron_mi->dr03EcalRecHitSumEt();
+  Reco_QQ_elemi_iso03Hcal[Reco_QQ_size] = electron_mi->dr03HcalTowerSumEt();
+  Reco_QQ_elemi_dxy[Reco_QQ_size] = electron_mi->gsfTrack()->dxy(RefVtx);
+  Reco_QQ_elemi_dz[Reco_QQ_size] = electron_mi->gsfTrack()->dz(RefVtx);
   
   TLorentzVector vZ = lorentzMomentum(aZCand->p4());
   TLorentzVector vZ_SC = TLorentzVector(vElectron1_SC) + TLorentzVector(vElectron2_SC);
   TLorentzVector vZ_Tk = TLorentzVector(vElectron1_Tk) + TLorentzVector(vElectron2_Tk);
+  TLorentzVector vZ_ClTk = TLorentzVector(vElectron1_ClTk) + TLorentzVector(vElectron2_ClTk);
 
   new((*Reco_QQ_4mom)[Reco_QQ_size])TLorentzVector(vZ);
   new((*Reco_QQ_SC_4mom)[Reco_QQ_size])TLorentzVector(vZ_SC);
   new((*Reco_QQ_Tk_4mom)[Reco_QQ_size])TLorentzVector(vZ_Tk);
+  new((*Reco_QQ_ClTk_4mom)[Reco_QQ_size])TLorentzVector(vZ_ClTk);
 
   Reco_QQ_VtxProb[Reco_QQ_size] = aZCand->userFloat("vProb");
 
@@ -718,14 +787,17 @@ HiZeeAnalyzer::InitEvent()
   Reco_QQ_4mom->Clear();
   Reco_QQ_SC_4mom->Clear();
   Reco_QQ_Tk_4mom->Clear();
+  Reco_QQ_ClTk_4mom->Clear();
 
   Reco_QQ_elepl_4mom->Clear();
   Reco_QQ_elepl_SC_4mom->Clear();
   Reco_QQ_elepl_Tk_4mom->Clear();
+  Reco_QQ_elepl_ClTk_4mom->Clear();
 
   Reco_QQ_elemi_4mom->Clear();
   Reco_QQ_elemi_SC_4mom->Clear();
   Reco_QQ_elemi_Tk_4mom->Clear();
+  Reco_QQ_elemi_ClTk_4mom->Clear();
 
   Reco_ele_4mom->Clear();
   Reco_ele_3vec->Clear();
@@ -906,14 +978,17 @@ HiZeeAnalyzer::InitTree()
   Reco_QQ_4mom = new TClonesArray("TLorentzVector",10000);
   Reco_QQ_SC_4mom = new TClonesArray("TLorentzVector",10000);
   Reco_QQ_Tk_4mom = new TClonesArray("TLorentzVector",10000);
+  Reco_QQ_ClTk_4mom = new TClonesArray("TLorentzVector",10000);
 
   Reco_QQ_elepl_4mom = new TClonesArray("TLorentzVector",10000);
   Reco_QQ_elepl_SC_4mom = new TClonesArray("TLorentzVector",10000);
   Reco_QQ_elepl_Tk_4mom = new TClonesArray("TLorentzVector",10000);
+  Reco_QQ_elepl_ClTk_4mom = new TClonesArray("TLorentzVector",10000);
 
   Reco_QQ_elemi_4mom = new TClonesArray("TLorentzVector",10000);
   Reco_QQ_elemi_SC_4mom = new TClonesArray("TLorentzVector",10000);
   Reco_QQ_elemi_Tk_4mom = new TClonesArray("TLorentzVector",10000);
+  Reco_QQ_elemi_ClTk_4mom = new TClonesArray("TLorentzVector",10000);
 
   if (_isMC) {
     Gen_ele_4mom = new TClonesArray("TLorentzVector", 2);
@@ -938,14 +1013,17 @@ HiZeeAnalyzer::InitTree()
   myTree->Branch("Reco_QQ_4mom", "TClonesArray", &Reco_QQ_4mom, 32000, 0);
   myTree->Branch("Reco_QQ_SC_4mom", "TClonesArray", &Reco_QQ_SC_4mom, 32000, 0);
   myTree->Branch("Reco_QQ_Tk_4mom", "TClonesArray", &Reco_QQ_Tk_4mom, 32000, 0);
+  myTree->Branch("Reco_QQ_ClTk_4mom", "TClonesArray", &Reco_QQ_ClTk_4mom, 32000, 0);
 
   myTree->Branch("Reco_QQ_elepl_4mom", "TClonesArray", &Reco_QQ_elepl_4mom, 32000, 0);
   myTree->Branch("Reco_QQ_elepl_SC_4mom", "TClonesArray", &Reco_QQ_elepl_SC_4mom, 32000, 0);
   myTree->Branch("Reco_QQ_elepl_Tk_4mom", "TClonesArray", &Reco_QQ_elepl_Tk_4mom, 32000, 0);
+  myTree->Branch("Reco_QQ_elepl_ClTk_4mom", "TClonesArray", &Reco_QQ_elepl_ClTk_4mom, 32000, 0);
 
   myTree->Branch("Reco_QQ_elemi_4mom", "TClonesArray", &Reco_QQ_elemi_4mom, 32000, 0);
   myTree->Branch("Reco_QQ_elemi_SC_4mom", "TClonesArray", &Reco_QQ_elemi_SC_4mom, 32000, 0);
   myTree->Branch("Reco_QQ_elemi_Tk_4mom", "TClonesArray", &Reco_QQ_elemi_Tk_4mom, 32000, 0);
+  myTree->Branch("Reco_QQ_elemi_ClTk_4mom", "TClonesArray", &Reco_QQ_elemi_ClTk_4mom, 32000, 0);
 
   myTree->Branch("Reco_QQ_elepl_charge", Reco_QQ_elepl_charge, "Reco_QQ_elepl_charge[Reco_QQ_size]/I");
   myTree->Branch("Reco_QQ_elepl_he", Reco_QQ_elepl_he, "Reco_QQ_elepl_he[Reco_QQ_size]/F");
@@ -956,7 +1034,14 @@ HiZeeAnalyzer::InitTree()
   myTree->Branch("Reco_QQ_elepl_ep",Reco_QQ_elepl_ep,"Reco_QQ_elepl_ep[Reco_QQ_size]/F");
   myTree->Branch("Reco_QQ_elepl_eseedp",Reco_QQ_elepl_eseedp,"Reco_QQ_elepl_eseedp[Reco_QQ_size]/F");
   myTree->Branch("Reco_QQ_elepl_eelepout",Reco_QQ_elepl_eelepout,"Reco_QQ_elepl_eelepout[Reco_QQ_size]/F");
-
+  myTree->Branch("Reco_QQ_elepl_ecalE",Reco_QQ_elepl_ecalE,"Reco_QQ_elepl_ecalE[Reco_QQ_size]/F");
+  myTree->Branch("Reco_QQ_elepl_trackP",Reco_QQ_elepl_trackP,"Reco_QQ_elepl_trackP[Reco_QQ_size]/F");
+  myTree->Branch("Reco_QQ_elepl_iso03Tk",Reco_QQ_elepl_iso03Tk,"Reco_QQ_elepl_iso03Tk[Reco_QQ_size]/F");
+  myTree->Branch("Reco_QQ_elepl_iso03Ecal",Reco_QQ_elepl_iso03Ecal,"Reco_QQ_elepl_iso03Ecal[Reco_QQ_size]/F");
+  myTree->Branch("Reco_QQ_elepl_iso03Hcal",Reco_QQ_elepl_iso03Hcal,"Reco_QQ_elepl_iso03Hcal[Reco_QQ_size]/F");
+  myTree->Branch("Reco_QQ_elepl_dxy",Reco_QQ_elepl_dxy,"Reco_QQ_elepl_dxy[Reco_QQ_size]/F");
+  myTree->Branch("Reco_QQ_elepl_dz",Reco_QQ_elepl_dz,"Reco_QQ_elepl_dz[Reco_QQ_size]/F");
+  
   myTree->Branch("Reco_QQ_elemi_charge", Reco_QQ_elemi_charge, "Reco_QQ_elemi_charge[Reco_QQ_size]/I");
   myTree->Branch("Reco_QQ_elemi_he", Reco_QQ_elemi_he, "Reco_QQ_elemi_he[Reco_QQ_size]/F");
   myTree->Branch("Reco_QQ_elemi_sigmaietaieta", Reco_QQ_elemi_sigmaietaieta, "Reco_QQ_elemi_sigmaietaieta[Reco_QQ_size]/F");
@@ -966,6 +1051,13 @@ HiZeeAnalyzer::InitTree()
   myTree->Branch("Reco_QQ_elemi_ep",Reco_QQ_elemi_ep,"Reco_QQ_elemi_ep[Reco_QQ_size]/F");
   myTree->Branch("Reco_QQ_elemi_eseedp",Reco_QQ_elemi_eseedp,"Reco_QQ_elemi_eseedp[Reco_QQ_size]/F");
   myTree->Branch("Reco_QQ_elemi_eelepout",Reco_QQ_elemi_eelepout,"Reco_QQ_elemi_eelepout[Reco_QQ_size]/F");
+  myTree->Branch("Reco_QQ_elemi_ecalE",Reco_QQ_elemi_ecalE,"Reco_QQ_elemi_ecalE[Reco_QQ_size]/F");
+  myTree->Branch("Reco_QQ_elemi_trackP",Reco_QQ_elemi_trackP,"Reco_QQ_elemi_trackP[Reco_QQ_size]/F");
+  myTree->Branch("Reco_QQ_elemi_iso03Tk",Reco_QQ_elemi_iso03Tk,"Reco_QQ_elemi_iso03Tk[Reco_QQ_size]/F");
+  myTree->Branch("Reco_QQ_elemi_iso03Ecal",Reco_QQ_elemi_iso03Ecal,"Reco_QQ_elemi_iso03Ecal[Reco_QQ_size]/F");
+  myTree->Branch("Reco_QQ_elemi_iso03Hcal",Reco_QQ_elemi_iso03Hcal,"Reco_QQ_elemi_iso03Hcal[Reco_QQ_size]/F");
+  myTree->Branch("Reco_QQ_elemi_dxy",Reco_QQ_elemi_dxy,"Reco_QQ_elemi_dxy[Reco_QQ_size]/F");
+  myTree->Branch("Reco_QQ_elemi_dz",Reco_QQ_elemi_dz,"Reco_QQ_elemi_dz[Reco_QQ_size]/F");
 	
   myTree->Branch("Reco_QQ_trig", Reco_QQ_trig,   "Reco_QQ_trig[Reco_QQ_size]/I");
   myTree->Branch("Reco_QQ_VtxProb", Reco_QQ_VtxProb,   "Reco_QQ_VtxProb[Reco_QQ_size]/F");

@@ -116,22 +116,6 @@ private:
 
   void fillTree(const TLorentzVector &mom_v, const TLorentzVector &tag_v, const TLorentzVector &probe_v);
 	
-  float min_eta;
-  float max_eta;
-
-   std::string  _outputName; 
-    int _centMin;
-    int _centMax;
-    double _ptWeight;
-
-	float min_pt;
-
-	float min_mass;
-	float max_mass;
-
-	float min_mass_SC;
-	float max_mass_SC;
-
   // TFile
   TFile* fOut;
 
@@ -153,6 +137,28 @@ private:
   edm::Handle<pat::ElectronCollection> probeElectronsTrig;
   edm::Handle<reco::SuperClusterCollection> probeElectronsReco;
 
+	std::string  _outputName; 
+	int _centMin;
+	int _centMax;
+	double _ptWeight;
+	bool	_isMC;
+	bool	_isHI;
+	double 	max_eta;
+	double	min_pt;
+	double	min_mass;
+	double	max_mass;
+	double	min_mass_SC;
+	double	max_mass_SC;
+  std::string  _dblEleTrg;
+  std::string  _sglEleTrg;
+	
+  edm::InputTag _tagSglTrg;
+  edm::InputTag _tagDblTrg;
+  edm::InputTag _probeTrg;
+  edm::InputTag _probeEleId;
+  edm::InputTag _probeRec;
+  edm::InputTag _towerMaker;
+	
   // data members
 
   // number of events
@@ -190,7 +196,23 @@ TagAndProbeAnalyzer::TagAndProbeAnalyzer(const edm::ParameterSet& iConfig):
     _outputName(iConfig.getParameter<std::string>("outputName")),
     _centMin(iConfig.getParameter<int>("centMin")),
     _centMax(iConfig.getParameter<int>("centMax")),
-    _ptWeight(iConfig.getParameter<double>("ptWeight"))
+    _ptWeight(iConfig.getParameter<double>("ptWeight")),
+		_isMC(iConfig.getParameter<bool>("isMC")),
+		_isHI(iConfig.getParameter<bool>("isHI")),
+		max_eta(iConfig.getParameter<double>("maxEta")),
+		min_pt(iConfig.getParameter<double>("minPt")),
+		min_mass(iConfig.getParameter<double>("minMass")),
+		max_mass(iConfig.getParameter<double>("maxMass")),
+		min_mass_SC(iConfig.getParameter<double>("minMassSC")),
+		max_mass_SC(iConfig.getParameter<double>("maxMassSC")),
+                _dblEleTrg(iConfig.getParameter<std::string>("dblEleTrg")),
+                _sglEleTrg(iConfig.getParameter<std::string>("sglEleTrg")),
+		_tagSglTrg(iConfig.getParameter<edm::InputTag>("tagSglTrg")),
+		_tagDblTrg(iConfig.getParameter<edm::InputTag>("tagDblTrg")),
+		_probeTrg(iConfig.getParameter<edm::InputTag>("probeTrg")),
+		_probeEleId(iConfig.getParameter<edm::InputTag>("probeEleId")),
+		_probeRec(iConfig.getParameter<edm::InputTag>("probeRec")),
+		_towerMaker(iConfig.getParameter<edm::InputTag>("towerMaker"))
 {
   centrality_ = 0;
 
@@ -218,17 +240,6 @@ TagAndProbeAnalyzer::TagAndProbeAnalyzer(const edm::ParameterSet& iConfig):
 	pair_HLT= 0;
 	tag_HLT= 0;
 	HLT= 0;
-
-  min_eta = 0.0;
-  max_eta = 1.44;
-
-	min_pt = 20.;
-
-	min_mass = 60.;
-	max_mass = 120.;
-
-	min_mass_SC = 40.;
-	max_mass_SC = 140.;
 }
 
 
@@ -256,31 +267,33 @@ TagAndProbeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 	if (INFO) cout << "A1" << endl;
 
   cout << "Event with centrality of ";
-	
-  if(!centrality_) centrality_ = new CentralityProvider(iSetup);
-	if (INFO) cout << "A2" << endl;
-  centrality_->newEvent(iEvent,iSetup); // make sure you do this first in every event
-	if (INFO) cout << "A3" << endl;
-  centBin = centrality_->getBin();
 
-  cout << centBin << endl;
+  if (_isHI) {
+		if(!centrality_) centrality_ = new CentralityProvider(iSetup);
+		if (INFO) cout << "A2" << endl;
+		centrality_->newEvent(iEvent,iSetup); // make sure you do this first in every event
+		if (INFO) cout << "A3" << endl;
+		if (_centMin<0) centBin = 0;
+		else centBin = centrality_->getBin();
 
-	if ((centBin < _centMin) || (centBin >= _centMax)) {
-    if (INFO) cout << centBin << "Not in cent range " << _centMin << " to " << _centMax << endl;
-		return;
-	}
+		cout << centBin << endl;
+
+		if ((centBin < _centMin) || (centBin >= _centMax)) {
+			if (INFO) cout << centBin << "Not in cent range " << _centMin << " to " << _centMax << endl;
+			return;
+		}
+	} else centBin = 0;
 
 	if (INFO) cout << "A5" << endl;
-	
-	
+		
   towersH_ = new edm::Handle<CaloTowerCollection>();
 	
-  iEvent.getByLabel("tagElectronsSglTrg",tagElectronsSglTrg);
-  iEvent.getByLabel("tagElectronsDblTrg",tagElectronsDblTrg);
-  iEvent.getByLabel("probeElectronsID",probeElectronsID);
-  iEvent.getByLabel("probeElectronsTrig",probeElectronsTrig);
-  iEvent.getByLabel("probeElectronsReco",probeElectronsReco);
-  iEvent.getByLabel("towerMaker",*towersH_);
+  iEvent.getByLabel(_tagSglTrg,tagElectronsSglTrg);
+  iEvent.getByLabel(_tagDblTrg,tagElectronsDblTrg);
+  iEvent.getByLabel(_probeEleId,probeElectronsID);
+  iEvent.getByLabel(_probeTrg,probeElectronsTrig);
+  iEvent.getByLabel(_probeRec,probeElectronsReco);
+  iEvent.getByLabel(_towerMaker,*towersH_);
 
   if (INFO) cout << "A" << endl;
 	
@@ -324,7 +337,7 @@ TagAndProbeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 			if (!(matchDouble(tag))) continue;//get rid of those tags not matched to trigger
 			if (!(isElectron(tag))) continue;//get rid of those tags that do not pass ElectronID cuts
 			
-		// Tag and Probe - MuonID
+		// Tag and Probe - ElectronID
 			if (probeElectronsID.isValid()) {
 				for(vector<pat::Electron>::const_iterator ip=probeElectronsID->begin();ip!=probeElectronsID->end();++ip) {
 
@@ -389,13 +402,14 @@ void TagAndProbeAnalyzer::fillTree(const TLorentzVector &mom_v, const TLorentzVe
 	abseta = fabs(probe_v.Eta());
 	eta= probe_v.Eta();
 	pt= probe_v.Pt();
-	if ((_ptWeight>0.9999)&&(_ptWeight<1.0001)) weight = 1;
-  else weight = _ptWeight*FindCentWeight(centBin);
+	if (_isMC && _isHI) weight = _ptWeight*FindCentWeight(centBin);
+	else if (_isMC) weight = _ptWeight;
+	else weight = 1;
 
 	mass= mom_v.M();
 
 	tag_eta= tag_v.Eta();
-	tag_pt= tag_v.Eta();
+	tag_pt= tag_v.Pt();
 
 		if (INFO) cout << "E" << endl;
 
@@ -458,18 +472,20 @@ bool TagAndProbeAnalyzer::isGoodSC(const reco::SuperCluster &probe)
 
 bool TagAndProbeAnalyzer::isElectron(const pat::Electron* ele)
 {
-  return (fabs(ele->hadronicOverEm())<0.2 && fabs(ele->sigmaIetaIeta())<0.011 && fabs(ele->deltaEtaSuperClusterTrackAtVtx())<0.03 && fabs(ele->deltaPhiSuperClusterTrackAtVtx())<0.15);
+  return (fabs(ele->hadronicOverEm())<0.2 && fabs(ele->sigmaIetaIeta())<0.011 && fabs(ele->deltaEtaSuperClusterTrackAtVtx())<0.03 && fabs(ele->deltaPhiSuperClusterTrackAtVtx())<0.15 && fabs(ele->dB()) < 0.02 && fabs(1./ele->ecalEnergy()-ele->eSuperClusterOverP()/ele->ecalEnergy()) < 0.1);
 }
 
 bool TagAndProbeAnalyzer::matchSingle(const pat::Electron* ele)
 {
 //  return !(ele->triggerObjectMatchesByPath("HLT_HISinglePhoton15_v*").empty());
-  return !(ele->triggerObjectMatchesByPath("HLT_HISinglePhoton20_v*").empty());
+//  return !(ele->triggerObjectMatchesByPath("HLT_HISinglePhoton20_v*").empty());
+  return !(ele->triggerObjectMatchesByPath(_sglEleTrg).empty());
 }
 
 bool TagAndProbeAnalyzer::matchDouble(const pat::Electron* ele)
 {
-  return !(ele->triggerObjectMatchesByPath("HLT_HIPhoton15_Photon20_v*").empty());
+//  return !(ele->triggerObjectMatchesByPath("HLT_HIPhoton15_Photon20_v*").empty());
+  return !(ele->triggerObjectMatchesByPath(_dblEleTrg).empty());
 }
 
 bool TagAndProbeAnalyzer::reconstructedSC(const reco::SuperClusterRef probe, const edm::Handle<pat::ElectronCollection> electronColl)
