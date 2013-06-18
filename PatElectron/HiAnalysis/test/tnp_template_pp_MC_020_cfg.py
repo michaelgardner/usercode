@@ -70,9 +70,9 @@ from PatElectron.HiAnalysis.z02EleElePAT_cff import *
 
 z02EleElePAT(process, GlobalTag=process.GlobalTag.globaltag, MC=False, HLT="HLT", Filter=False)
 
-#process.source.fileNames = cms.untracked.vstring('/store/caf/user/mgardner/Z_ee_MC_020/v1/MC_ZEE_2TeV76_FEVTDEBUGHLT_100_1_xPI.root')
+process.source.fileNames = cms.untracked.vstring('/store/caf/user/mgardner/Z_ee_MC_020/v1/MC_ZEE_2TeV76_FEVTDEBUGHLT_100_1_xPI.root')
 
-process.load("Configuration.GenProduction.dataset_list.MC_020_AAAA_cfi")
+#process.load("Configuration.GenProduction.dataset_list.MC_020_AAAA_cfi")
 
 #process.load("Configuration.GenProduction.MC_Z_020_cfi")
 

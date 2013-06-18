@@ -34,7 +34,7 @@ process.options = cms.untracked.PSet()
 
 # Production Info
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.1 $'),
+    version = cms.untracked.string('$Revision: 1.2 $'),
     annotation = cms.untracked.string('hiReco nevts:1'),
     name = cms.untracked.string('PyReleaseValidation')
 )
@@ -66,7 +66,9 @@ from PatElectron.HiAnalysis.z02EleElePAT_cff import *
 
 z02EleElePAT(process, GlobalTag=process.GlobalTag.globaltag, MC=False, HLT="HLT", Filter=False)
 
-process.source.fileNames = cms.untracked.vstring('/store/group/phys_heavyions/dileptons/mgardner/Z_ee/RD/PbPb/v2/output_106_1_wQK.root')
+#process.source.fileNames = cms.untracked.vstring('/store/group/phys_heavyions/dileptons/mgardner/Z_ee/RD/PbPb/v2/output_106_1_wQK.root')
+
+process.source.fileNames = cms.untracked.vstring('/store/group/phys_heavyions/dileptons/mgardner/Z_ee/RD/PbPb/v3/output_9_1_qYt.root')
 
 #process.load("PatElectron.HiAnalysis.dataset_list.RD_AAAA_cfi")
 
