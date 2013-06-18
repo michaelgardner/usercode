@@ -66,9 +66,9 @@ from PatElectron.HiAnalysis.z02EleElePAT_cff import *
 
 z02EleElePAT(process, GlobalTag=process.GlobalTag.globaltag, MC=False, HLT="HLT", Filter=False)
 
-#process.source.fileNames = cms.untracked.vstring('/store/group/phys_heavyions/dileptons/mgardner/Z_ee/RD/PbPb/v2/output_106_1_wQK.root')
+process.source.fileNames = cms.untracked.vstring('/store/group/phys_heavyions/dileptons/mgardner/Z_ee/RD/PbPb/v2/output_106_1_wQK.root')
 
-process.load("PatElectron.HiAnalysis.dataset_list.RD_AAAA_cfi")
+#process.load("PatElectron.HiAnalysis.dataset_list.RD_AAAA_cfi")
 
 process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(-1)
@@ -203,9 +203,12 @@ process.tnp = cms.EDAnalyzer("TagAndProbeAnalyzer",
     sglEleTrg = cms.string("HLT_HISinglePhoton20_v*"),
 
     outputName = cms.string('pat_RD_AAAA_EEEE.root'),
-    centMin = cms.int32(BBBB),
-    centMax = cms.int32(CCCC),
-    ptWeight = cms.double(DDDD)
+    #centMin = cms.int32(BBBB),
+    #centMax = cms.int32(CCCC),
+    #ptWeight = cms.double(DDDD)
+    centMin = cms.int32(0),
+    centMax = cms.int32(100),
+    ptWeight = cms.double(1)
 )
 
 process.output = cms.OutputModule("PoolOutputModule",
