@@ -19,7 +19,7 @@ VertexReProducer::VertexReProducer(const edm::Handle<reco::VertexCollection> &ha
         throw cms::Exception("CorruptData") << "Vertex handle parameter set ID id = " << psid;
 
     if (prov->moduleName() != "PrimaryVertexProducer" &&
-	prov->moduleName() != "HIBestVertexProducer") 
+  prov->moduleName() != "HIBestVertexProducer") 
         throw cms::Exception("Configuration") << "Vertices to re-produce don't come from a PrimaryVertexProducer, but from a " << prov->moduleName() <<".\n";
 
     configure(psetFromProvenance); 

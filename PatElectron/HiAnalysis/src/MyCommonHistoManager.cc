@@ -99,95 +99,95 @@ MyCommonHistograms::BookParticleHistos() {
   edm::LogInfo("MyCommonHistograms")<<"[MyCommonHistograms::BookParticleHistos] " << hName;
 
   hMass = new TH1F(("h" + hName + "_mass").c_str(),
-		   ("Invariant mass of " + hLabel + ";m_{inv} (" + hLabel + ") [GeV/c^{2}];counts").c_str(),
-		   theMassBinning->GetNbins(), theMassBinning->GetMinVal(), theMassBinning->GetMaxVal());
+       ("Invariant mass of " + hLabel + ";m_{inv} (" + hLabel + ") [GeV/c^{2}];counts").c_str(),
+       theMassBinning->GetNbins(), theMassBinning->GetMinVal(), theMassBinning->GetMaxVal());
 
   hE = new TH1F(("h" + hName + "_E").c_str(),
-		("Energy of " + hLabel + ";E (" + hLabel + ") [GeV];counts").c_str(),
-		theEBinning->GetNbins(), theEBinning->GetMinVal(), theEBinning->GetMaxVal());
+    ("Energy of " + hLabel + ";E (" + hLabel + ") [GeV];counts").c_str(),
+    theEBinning->GetNbins(), theEBinning->GetMinVal(), theEBinning->GetMaxVal());
   hPt = new TH1F(("h" + hName + "_pt").c_str(),
-		 ("Transverse momentum of " + hLabel + ";p_{T} (" + hLabel + ") [GeV/c];counts").c_str(),
-		 thePtBinning->GetNbins(), thePtBinning->GetMinVal(), thePtBinning->GetMaxVal());
+     ("Transverse momentum of " + hLabel + ";p_{T} (" + hLabel + ") [GeV/c];counts").c_str(),
+     thePtBinning->GetNbins(), thePtBinning->GetMinVal(), thePtBinning->GetMaxVal());
   hPhi = new TH1F(("h" + hName + "_phi").c_str(),
-		  ("Aziumuthal angle of " + hLabel + ";#phi (" + hLabel + ") [rad];counts").c_str(),
-		  thePhiBinning->GetNbins(), thePhiBinning->GetMinVal(), thePhiBinning->GetMaxVal());
+      ("Aziumuthal angle of " + hLabel + ";#phi (" + hLabel + ") [rad];counts").c_str(),
+      thePhiBinning->GetNbins(), thePhiBinning->GetMinVal(), thePhiBinning->GetMaxVal());
   if (useRapidity) {
     hEta = new TH1F(("h" + hName + "_eta").c_str(),
-		    ("Rapidity of " + hLabel + ";y (" + hLabel + ");counts").c_str(),
-		    theEtaBinning->GetNbins(), theEtaBinning->GetMinVal(), theEtaBinning->GetMaxVal());
+        ("Rapidity of " + hLabel + ";y (" + hLabel + ");counts").c_str(),
+        theEtaBinning->GetNbins(), theEtaBinning->GetMinVal(), theEtaBinning->GetMaxVal());
     hE_Eta = new TH2F(("h" + hName + "_E_eta").c_str(),
-		      ("Energy vs. rapidity of " + hLabel + ";y (" + hLabel + ");E (" + hLabel + ") [GeV];counts").c_str(),
-		      theEtaBinning->GetNbins(), theEtaBinning->GetMinVal(), theEtaBinning->GetMaxVal(),
-		      theEBinning->GetNbins(), theEBinning->GetMinVal(), theEBinning->GetMaxVal());
+          ("Energy vs. rapidity of " + hLabel + ";y (" + hLabel + ");E (" + hLabel + ") [GeV];counts").c_str(),
+          theEtaBinning->GetNbins(), theEtaBinning->GetMinVal(), theEtaBinning->GetMaxVal(),
+          theEBinning->GetNbins(), theEBinning->GetMinVal(), theEBinning->GetMaxVal());
     hPt_Eta = new TH2F(("h" + hName + "_pt_eta").c_str(),
-		       ("Transverse momentum vs. rapidity of " + hLabel + ";y (" + hLabel + ");p_{T} (" + hLabel + ") [GeV/c];counts").c_str(),
-		       theEtaBinning->GetNbins(), theEtaBinning->GetMinVal(), theEtaBinning->GetMaxVal(),
-		       thePtBinning->GetNbins(), thePtBinning->GetMinVal(), thePtBinning->GetMaxVal());
+           ("Transverse momentum vs. rapidity of " + hLabel + ";y (" + hLabel + ");p_{T} (" + hLabel + ") [GeV/c];counts").c_str(),
+           theEtaBinning->GetNbins(), theEtaBinning->GetMinVal(), theEtaBinning->GetMaxVal(),
+           thePtBinning->GetNbins(), thePtBinning->GetMinVal(), thePtBinning->GetMaxVal());
     hPhi_Eta = new TH2F(("h" + hName + "_phi_eta").c_str(),
-			("Azimuthal angle vs. rapidity of " + hLabel + ";y (" + hLabel + ");#phi (" + hLabel + ") [rad];counts").c_str(),
-			theEtaBinning->GetNbins(), theEtaBinning->GetMinVal(), theEtaBinning->GetMaxVal(),
-			thePhiBinning->GetNbins(), thePhiBinning->GetMinVal(), thePhiBinning->GetMaxVal());
+      ("Azimuthal angle vs. rapidity of " + hLabel + ";y (" + hLabel + ");#phi (" + hLabel + ") [rad];counts").c_str(),
+      theEtaBinning->GetNbins(), theEtaBinning->GetMinVal(), theEtaBinning->GetMaxVal(),
+      thePhiBinning->GetNbins(), thePhiBinning->GetMinVal(), thePhiBinning->GetMaxVal());
     hEta_Mass = new TH2F(("h" + hName + "_eta_mass").c_str(),
-			 ("Rapidity vs. invariant mass of " + hLabel + ";m_{inv} (" + hLabel + ") [GeV/c^{2}];y (" + hLabel + ");counts").c_str(),
-			 theMassBinning->GetNbins(), theMassBinning->GetMinVal(), theMassBinning->GetMaxVal(),
-			 theEtaBinning->GetNbins(), theEtaBinning->GetMinVal(), theEtaBinning->GetMaxVal());
+       ("Rapidity vs. invariant mass of " + hLabel + ";m_{inv} (" + hLabel + ") [GeV/c^{2}];y (" + hLabel + ");counts").c_str(),
+       theMassBinning->GetNbins(), theMassBinning->GetMinVal(), theMassBinning->GetMaxVal(),
+       theEtaBinning->GetNbins(), theEtaBinning->GetMinVal(), theEtaBinning->GetMaxVal());
 
   }
   else {
     hEta = new TH1F(("h" + hName + "_eta").c_str(),
-		    ("Pseudo-rapidity of " + hLabel + ";#eta (" + hLabel + ");counts").c_str(),
-		    theEtaBinning->GetNbins(), theEtaBinning->GetMinVal(), theEtaBinning->GetMaxVal());
+        ("Pseudo-rapidity of " + hLabel + ";#eta (" + hLabel + ");counts").c_str(),
+        theEtaBinning->GetNbins(), theEtaBinning->GetMinVal(), theEtaBinning->GetMaxVal());
     hE_Eta = new TH2F(("h" + hName + "_E_eta").c_str(),
-		      ("Energy vs. pseudo-rapidity of " + hLabel + ";#eta (" + hLabel + ");E (" + hLabel + ") [GeV];counts").c_str(),
-		      theEtaBinning->GetNbins(), theEtaBinning->GetMinVal(), theEtaBinning->GetMaxVal(),
-		      theEBinning->GetNbins(), theEBinning->GetMinVal(), theEBinning->GetMaxVal());
+          ("Energy vs. pseudo-rapidity of " + hLabel + ";#eta (" + hLabel + ");E (" + hLabel + ") [GeV];counts").c_str(),
+          theEtaBinning->GetNbins(), theEtaBinning->GetMinVal(), theEtaBinning->GetMaxVal(),
+          theEBinning->GetNbins(), theEBinning->GetMinVal(), theEBinning->GetMaxVal());
     hPt_Eta = new TH2F(("h" + hName + "_pt_eta").c_str(),
-		       ("Transverse momentum vs. pseudo-rapidity of " + hLabel + ";#eta (" + hLabel + ");p_{T} (" + hLabel + ") [GeV/c];counts").c_str(),
-		       theEtaBinning->GetNbins(), theEtaBinning->GetMinVal(), theEtaBinning->GetMaxVal(),
-		       thePtBinning->GetNbins(), thePtBinning->GetMinVal(), thePtBinning->GetMaxVal());
+           ("Transverse momentum vs. pseudo-rapidity of " + hLabel + ";#eta (" + hLabel + ");p_{T} (" + hLabel + ") [GeV/c];counts").c_str(),
+           theEtaBinning->GetNbins(), theEtaBinning->GetMinVal(), theEtaBinning->GetMaxVal(),
+           thePtBinning->GetNbins(), thePtBinning->GetMinVal(), thePtBinning->GetMaxVal());
     hPhi_Eta = new TH2F(("h" + hName + "_phi_eta").c_str(),
-			("Azimuthal angle vs. pseudo-rapidity of " + hLabel + ";#eta (" + hLabel + ");#phi (" + hLabel + ") [rad];counts").c_str(),
-			theEtaBinning->GetNbins(), theEtaBinning->GetMinVal(), theEtaBinning->GetMaxVal(),
-			thePhiBinning->GetNbins(), thePhiBinning->GetMinVal(), thePhiBinning->GetMaxVal());
+      ("Azimuthal angle vs. pseudo-rapidity of " + hLabel + ";#eta (" + hLabel + ");#phi (" + hLabel + ") [rad];counts").c_str(),
+      theEtaBinning->GetNbins(), theEtaBinning->GetMinVal(), theEtaBinning->GetMaxVal(),
+      thePhiBinning->GetNbins(), thePhiBinning->GetMinVal(), thePhiBinning->GetMaxVal());
     hEta_Mass = new TH2F(("h" + hName + "_eta_mass").c_str(),
-			 ("Pseudo-rapidity vs. invariant mass of " + hLabel + ";m_{inv} (" + hLabel + ") [GeV/c^{2}];#eta (" + hLabel + ");counts").c_str(),
-			 theMassBinning->GetNbins(), theMassBinning->GetMinVal(), theMassBinning->GetMaxVal(),
-			 theEtaBinning->GetNbins(), theEtaBinning->GetMinVal(), theEtaBinning->GetMaxVal());
+       ("Pseudo-rapidity vs. invariant mass of " + hLabel + ";m_{inv} (" + hLabel + ") [GeV/c^{2}];#eta (" + hLabel + ");counts").c_str(),
+       theMassBinning->GetNbins(), theMassBinning->GetMinVal(), theMassBinning->GetMaxVal(),
+       theEtaBinning->GetNbins(), theEtaBinning->GetMinVal(), theEtaBinning->GetMaxVal());
 
   }
     
   hE_Phi = new TH2F(("h" + hName + "_E_phi").c_str(),
-		    ("Energy vs. azimuthal angle of " + hLabel + ";#phi (" + hLabel + ") [rad];E (" + hLabel + ") [GeV];counts").c_str(),
-		    thePhiBinning->GetNbins(), thePhiBinning->GetMinVal(), thePhiBinning->GetMaxVal(),
-		    theEBinning->GetNbins(), theEBinning->GetMinVal(), theEBinning->GetMaxVal());
+        ("Energy vs. azimuthal angle of " + hLabel + ";#phi (" + hLabel + ") [rad];E (" + hLabel + ") [GeV];counts").c_str(),
+        thePhiBinning->GetNbins(), thePhiBinning->GetMinVal(), thePhiBinning->GetMaxVal(),
+        theEBinning->GetNbins(), theEBinning->GetMinVal(), theEBinning->GetMaxVal());
   hPt_Phi = new TH2F(("h" + hName + "_pt_phi").c_str(),
-		     ("Transverse momentum vs. azimuthal angle of " + hLabel + ";#phi (" + hLabel + ") [rad];p_{T} (" + hLabel + ") [GeV/c];counts").c_str(),
-		     thePhiBinning->GetNbins(), thePhiBinning->GetMinVal(), thePhiBinning->GetMaxVal(),
-		     thePtBinning->GetNbins(), thePtBinning->GetMinVal(), thePtBinning->GetMaxVal());
+         ("Transverse momentum vs. azimuthal angle of " + hLabel + ";#phi (" + hLabel + ") [rad];p_{T} (" + hLabel + ") [GeV/c];counts").c_str(),
+         thePhiBinning->GetNbins(), thePhiBinning->GetMinVal(), thePhiBinning->GetMaxVal(),
+         thePtBinning->GetNbins(), thePtBinning->GetMinVal(), thePtBinning->GetMaxVal());
 
   hPhi_Mass = new TH2F(("h" + hName + "_phi_mass").c_str(),
-		       ("Azimuthal angle vs. invariant mass of " + hLabel + ";m_{inv} (" + hLabel + ") [GeV/c^{2}];#phi (" + hLabel + ") [rad];counts").c_str(),
-		       thePhiBinning->GetNbins(), thePhiBinning->GetMinVal(), thePhiBinning->GetMaxVal(),
-		       theMassBinning->GetNbins(), theMassBinning->GetMinVal(), theMassBinning->GetMaxVal());
+           ("Azimuthal angle vs. invariant mass of " + hLabel + ";m_{inv} (" + hLabel + ") [GeV/c^{2}];#phi (" + hLabel + ") [rad];counts").c_str(),
+           thePhiBinning->GetNbins(), thePhiBinning->GetMinVal(), thePhiBinning->GetMaxVal(),
+           theMassBinning->GetNbins(), theMassBinning->GetMinVal(), theMassBinning->GetMaxVal());
 
   hE_Mass = new TH2F(("h" + hName + "_E_mass").c_str(),
-		     ("Energy vs. invariant mass of " + hLabel + ";m_{inv} (" + hLabel + ") [GeV/c^{2}];E (" + hLabel + ") [GeV];counts").c_str(),
-		     theMassBinning->GetNbins(), theMassBinning->GetMinVal(), theMassBinning->GetMaxVal(),
-		     theEBinning->GetNbins(), theEBinning->GetMinVal(), theEBinning->GetMaxVal());
+         ("Energy vs. invariant mass of " + hLabel + ";m_{inv} (" + hLabel + ") [GeV/c^{2}];E (" + hLabel + ") [GeV];counts").c_str(),
+         theMassBinning->GetNbins(), theMassBinning->GetMinVal(), theMassBinning->GetMaxVal(),
+         theEBinning->GetNbins(), theEBinning->GetMinVal(), theEBinning->GetMaxVal());
   hPt_Mass = new TH2F(("h" + hName + "_pt_mass").c_str(),
-		      ("Transverse momentum vs. invariant mass of " + hLabel + ";m_{inv} (" + hLabel + ") [GeV/c^{2}];p_{T} (" + hLabel + ") [GeV/c];counts").c_str(),
-		      theMassBinning->GetNbins(), theMassBinning->GetMinVal(), theMassBinning->GetMaxVal(),
-		      thePtBinning->GetNbins(), thePtBinning->GetMinVal(), thePtBinning->GetMaxVal());
+          ("Transverse momentum vs. invariant mass of " + hLabel + ";m_{inv} (" + hLabel + ") [GeV/c^{2}];p_{T} (" + hLabel + ") [GeV/c];counts").c_str(),
+          theMassBinning->GetNbins(), theMassBinning->GetMinVal(), theMassBinning->GetMaxVal(),
+          thePtBinning->GetNbins(), thePtBinning->GetMinVal(), thePtBinning->GetMaxVal());
 
   hCent_Mass = new TH2F(("h" + hName + "_cent_mass").c_str(),
-		      ("Centrality vs. invariant mass of " + hLabel + ";m_{inv} (" + hLabel + ") [GeV/c^{2}];Centrality [%];counts").c_str(),
-		      theMassBinning->GetNbins(), theMassBinning->GetMinVal(), theMassBinning->GetMaxVal(),
-		      theCentBinning->GetNbins(), theCentBinning->GetMinVal(), theCentBinning->GetMaxVal());
+          ("Centrality vs. invariant mass of " + hLabel + ";m_{inv} (" + hLabel + ") [GeV/c^{2}];Centrality [%];counts").c_str(),
+          theMassBinning->GetNbins(), theMassBinning->GetMinVal(), theMassBinning->GetMaxVal(),
+          theCentBinning->GetNbins(), theCentBinning->GetMinVal(), theCentBinning->GetMaxVal());
 
   hCtau_Mass = new TH2F(("h" + hName + "_ctau_mass").c_str(),
-			("c#tau vs. invariant mass of " + hLabel + ";m_{inv} (" + hLabel + ") [GeV/c^{2}];l_{" + hLabel + "} [mm];counts").c_str(),
-		      theMassBinning->GetNbins(), theMassBinning->GetMinVal(), theMassBinning->GetMaxVal(),
-		      theCtauBinning->GetNbins(), theCtauBinning->GetMinVal(), theCtauBinning->GetMaxVal());
+      ("c#tau vs. invariant mass of " + hLabel + ";m_{inv} (" + hLabel + ") [GeV/c^{2}];l_{" + hLabel + "} [mm];counts").c_str(),
+          theMassBinning->GetNbins(), theMassBinning->GetMinVal(), theMassBinning->GetMaxVal(),
+          theCtauBinning->GetNbins(), theCtauBinning->GetMinVal(), theCtauBinning->GetMaxVal());
 
   hMass->Sumw2();
   hE->Sumw2();

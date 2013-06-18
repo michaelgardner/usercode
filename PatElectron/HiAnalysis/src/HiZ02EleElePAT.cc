@@ -101,7 +101,7 @@ HiZ02EleElePAT::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
       // ---- no explicit order defined ----
       myCand.addDaughter(*it, "electron1");
-      myCand.addDaughter(*it2,"electron2");	
+      myCand.addDaughter(*it2,"electron2");  
 
       // ---- define and set candidate's 4momentum  ----  
       LorentzVector z0 = it->p4() + it2->p4();
@@ -113,7 +113,7 @@ HiZ02EleElePAT::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
       if (it->gsfTrack().isNonnull() && it2->gsfTrack().isNonnull()) {
         vector<TransientTrack> t_tks;
- 	      t_tks.push_back(theTTBuilder->build(*it->gsfTrack()));  // pass the reco::Track, not  the reco::TrackRef (which can be transient)
+         t_tks.push_back(theTTBuilder->build(*it->gsfTrack()));  // pass the reco::Track, not  the reco::TrackRef (which can be transient)
         t_tks.push_back(theTTBuilder->build(*it2->gsfTrack())); // 
         TransientVertex myVertex = vtxFitter.vertex(t_tks);
         if (myVertex.isValid()) {
@@ -128,33 +128,33 @@ HiZ02EleElePAT::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
         }
       }
 
-			// ---- MC Truth, if enabled ----
-			if (addMCTruth_) {
-				reco::GenParticleRef genEle1 = it->genParticleRef();
-				reco::GenParticleRef genEle2 = it2->genParticleRef();
-				if (genEle1.isNonnull() && genEle2.isNonnull()) {
-					if (genEle1->numberOfMothers()>0 && genEle2->numberOfMothers()>0) {
-						reco::GenParticleRef mom1 = genEle1->motherRef();
-						reco::GenParticleRef mom2 = genEle2->motherRef();
-						if (mom1.isNonnull() && (mom1 == mom2)) {
-							myCand.setGenParticleRef(mom1); // set
-							myCand.embedGenParticle();      // and embed
-						}
-					} else { // if the electrons aren't matched to the pat, we will just fill the Z's properties.
-						Handle<GenParticleCollection>theGenParticles;
-						iEvent.getByLabel("hiGenParticles", theGenParticles);
-						if (theGenParticles.isValid()){
-							for(size_t iGenParticle=0; iGenParticle<theGenParticles->size();++iGenParticle) {
-								const Candidate & genCand = (*theGenParticles)[iGenParticle];
-								if (genCand.pdgId()==23) {
-									reco::GenParticleRef mom1(theGenParticles,iGenParticle);
-									myCand.setGenParticleRef(mom1);
-									myCand.embedGenParticle();
-								}
-							}
-						}
-					}
-				}
+      // ---- MC Truth, if enabled ----
+      if (addMCTruth_) {
+        reco::GenParticleRef genEle1 = it->genParticleRef();
+        reco::GenParticleRef genEle2 = it2->genParticleRef();
+        if (genEle1.isNonnull() && genEle2.isNonnull()) {
+          if (genEle1->numberOfMothers()>0 && genEle2->numberOfMothers()>0) {
+            reco::GenParticleRef mom1 = genEle1->motherRef();
+            reco::GenParticleRef mom2 = genEle2->motherRef();
+            if (mom1.isNonnull() && (mom1 == mom2)) {
+              myCand.setGenParticleRef(mom1); // set
+              myCand.embedGenParticle();      // and embed
+            }
+          } else { // if the electrons aren't matched to the pat, we will just fill the Z's properties.
+            Handle<GenParticleCollection>theGenParticles;
+            iEvent.getByLabel("hiGenParticles", theGenParticles);
+            if (theGenParticles.isValid()){
+              for(size_t iGenParticle=0; iGenParticle<theGenParticles->size();++iGenParticle) {
+                const Candidate & genCand = (*theGenParticles)[iGenParticle];
+                if (genCand.pdgId()==23) {
+                  reco::GenParticleRef mom1(theGenParticles,iGenParticle);
+                  myCand.setGenParticleRef(mom1);
+                  myCand.embedGenParticle();
+                }
+              }
+            }
+          }
+        }
       }
 
       // ---- Push back output ----  
@@ -165,7 +165,7 @@ HiZ02EleElePAT::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   std::sort(z0Output->begin(),z0Output->end(),pTComparator_);
 
   iEvent.put(z0Output);
-	
+  
 }
 
 // ------------ method called once each job just before starting event loop  ------------

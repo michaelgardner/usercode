@@ -13,7 +13,7 @@
 //
 // Original Author:  Torsten Dahms,40 4-A32,+41227671635,
 //         Created:  Mon Nov 29 03:13:35 CET 2010
-// $Id: HiZeeAnalyzer.cc,v 1.23 2011/12/22 13:33:12 tdahms Exp $
+// $Id: HiZeeAnalyzer.cc,v 1.2 2013/06/18 08:00:21 mgardner Exp $
 //
 //
 
@@ -87,8 +87,8 @@ public:
   explicit HiZeeAnalyzer(const edm::ParameterSet&);
   ~HiZeeAnalyzer();
 
-	typedef math::XYZTLorentzVector LorentzVector;
-	
+  typedef math::XYZTLorentzVector LorentzVector;
+  
 private:
   virtual void beginJob() ;
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
@@ -163,10 +163,10 @@ private:
 
   int Reco_QQ_size;       // Number of reconstructed Z0 
   int Reco_QQ_sign[10000];   /* Ele Ele combinations sign:
-			     0 = +/- (signal)
-			     1 = +/+
-			     2 = -/- 
-			  */
+           0 = +/- (signal)
+           1 = +/+
+           2 = -/- 
+        */
   int Reco_QQ_trig[10000];      // Vector of trigger bits matched to the Z0
   float Reco_QQ_VtxProb[10000]; // chi2 probability of vertex fitting 
 
@@ -186,7 +186,7 @@ private:
   float Reco_QQ_elepl_iso03Hcal[10000];    // Vector of iso03Hcal
   float Reco_QQ_elepl_dxy[10000];    // Vector of dxy
   float Reco_QQ_elepl_dz[10000];    // Vector of dz
-	
+  
   int Reco_QQ_elemi_charge[10000];
   float Reco_QQ_elemi_he[10000]; //  h/e: keep < 0.15 (pp); keep < 0.2 (PbPb)
   float Reco_QQ_elemi_sigmaietaieta[10000]; // shower shape variable: keep < 0.01 EB; keep < 0.035 EE (pPb)
@@ -286,13 +286,13 @@ private:
 
   int _z0PDG;
 
-	double _maxEta;
-	double _maxPt;
+  double _maxEta;
+  double _maxPt;
 
   std::vector<std::string> theTriggerNames;
   std::vector<std::string> HLTLastFilters;
   int _doubleTrigNum;
-	
+  
   std::vector<const pat::CompositeCandidate*>   _thePassedCands[3];
 
   // number of events
@@ -403,10 +403,10 @@ HiZeeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   hPileUp->Fill(nPV);
 
   if (_isHI){
-		if(!centrality_) centrality_ = new CentralityProvider(iSetup);
-		centrality_->newEvent(iEvent,iSetup); // make sure you do this first in every event
-		centBin = centrality_->getBin();
-	} else centBin = 0;
+    if(!centrality_) centrality_ = new CentralityProvider(iSetup);
+    centrality_->newEvent(iEvent,iSetup); // make sure you do this first in every event
+    centBin = centrality_->getBin();
+  } else centBin = 0;
 
   hCent->Fill(centBin);
 
@@ -571,9 +571,9 @@ HiZeeAnalyzer::fillTreeZ(int iSign, int count) {
   TLorentzVector vElectron2_Tk(track2->px(),track2->py(),track2->pz(),track2->p());
   TLorentzVector vElectron2_ClTk(cl_px2,cl_py2,cl_pz2,cl_p2);
 
-	const reco::GsfElectron *electron_pl;
-	const reco::GsfElectron *electron_mi;
-	
+  const reco::GsfElectron *electron_pl;
+  const reco::GsfElectron *electron_mi;
+  
   if (electron1->charge() > electron2->charge()) {
 
     new((*Reco_QQ_elepl_4mom)[Reco_QQ_size])TLorentzVector(vElectron1);
@@ -586,12 +586,12 @@ HiZeeAnalyzer::fillTreeZ(int iSign, int count) {
     new((*Reco_QQ_elemi_Tk_4mom)[Reco_QQ_size])TLorentzVector(vElectron2_Tk);
     new((*Reco_QQ_elemi_ClTk_4mom)[Reco_QQ_size])TLorentzVector(vElectron2_ClTk);
 
-		Reco_QQ_elepl_charge[Reco_QQ_size] = electron1->charge();
-		Reco_QQ_elemi_charge[Reco_QQ_size] = electron2->charge();
-		
-		electron_pl = dynamic_cast<const reco::GsfElectron *>(electron1->originalObject());
-		electron_mi = dynamic_cast<const reco::GsfElectron *>(electron2->originalObject());
-	}
+    Reco_QQ_elepl_charge[Reco_QQ_size] = electron1->charge();
+    Reco_QQ_elemi_charge[Reco_QQ_size] = electron2->charge();
+    
+    electron_pl = dynamic_cast<const reco::GsfElectron *>(electron1->originalObject());
+    electron_mi = dynamic_cast<const reco::GsfElectron *>(electron2->originalObject());
+  }
   else {
     new((*Reco_QQ_elepl_4mom)[Reco_QQ_size])TLorentzVector(vElectron2);
     new((*Reco_QQ_elepl_SC_4mom)[Reco_QQ_size])TLorentzVector(vElectron2_SC);
@@ -603,12 +603,12 @@ HiZeeAnalyzer::fillTreeZ(int iSign, int count) {
     new((*Reco_QQ_elemi_Tk_4mom)[Reco_QQ_size])TLorentzVector(vElectron1_Tk);
     new((*Reco_QQ_elemi_ClTk_4mom)[Reco_QQ_size])TLorentzVector(vElectron1_ClTk);
 
-		Reco_QQ_elepl_charge[Reco_QQ_size] = electron2->charge();
-		Reco_QQ_elemi_charge[Reco_QQ_size] = electron1->charge();
-		
-		electron_pl = dynamic_cast<const reco::GsfElectron *>(electron2->originalObject());
-		electron_mi = dynamic_cast<const reco::GsfElectron *>(electron1->originalObject());
-	}
+    Reco_QQ_elepl_charge[Reco_QQ_size] = electron2->charge();
+    Reco_QQ_elemi_charge[Reco_QQ_size] = electron1->charge();
+    
+    electron_pl = dynamic_cast<const reco::GsfElectron *>(electron2->originalObject());
+    electron_mi = dynamic_cast<const reco::GsfElectron *>(electron1->originalObject());
+  }
 
   Reco_QQ_elepl_he[Reco_QQ_size] = electron_pl->hadronicOverEm(); //  h/e: keep < 0.15 (pp); keep < 0.2 (PbPb)
   Reco_QQ_elepl_sigmaietaieta[Reco_QQ_size] = electron_pl->sigmaIetaIeta(); // shower shape variable: keep < 0.01 EB; keep < 0.035 EE (pPb)
@@ -617,7 +617,7 @@ HiZeeAnalyzer::fillTreeZ(int iSign, int count) {
   Reco_QQ_elepl_eseedpout[Reco_QQ_size] = electron_pl->eSeedClusterOverPout();
   Reco_QQ_elepl_ep[Reco_QQ_size] = electron_pl->eSuperClusterOverP();
   Reco_QQ_elepl_eseedp[Reco_QQ_size] = electron_pl->eSeedClusterOverP();
-  Reco_QQ_elepl_eelepout[Reco_QQ_size] = electron_pl->eEleClusterOverPout();	
+  Reco_QQ_elepl_eelepout[Reco_QQ_size] = electron_pl->eEleClusterOverPout();  
   Reco_QQ_elepl_ecalE[Reco_QQ_size] = electron_pl->ecalEnergy();
   Reco_QQ_elepl_trackP[Reco_QQ_size] = electron_pl->ecalEnergy() / electron_pl->eSuperClusterOverP();
   Reco_QQ_elepl_iso03Tk[Reco_QQ_size] = electron_pl->dr03TkSumPt();
@@ -695,8 +695,8 @@ HiZeeAnalyzer::checkTriggers(const pat::CompositeCandidate* aZCand) {
       alreadyFilled[iTr]=true;
     }
   }
-	
-	return;
+  
+  return;
 }
 
 void
@@ -704,7 +704,7 @@ HiZeeAnalyzer::makeCuts(int sign) { //need to check why there are so few dielect
   if (collZ.isValid()) {
     for(std::vector<pat::CompositeCandidate>::const_iterator it=collZ->begin(); it!=collZ->end(); ++it) {
       
-      const pat::CompositeCandidate* cand = &(*it);	
+      const pat::CompositeCandidate* cand = &(*it);  
       if (fabs(cand->rapidity()) >= _maxEta) continue;
 
       const pat::Electron* electron1 = dynamic_cast<const pat::Electron*>(cand->daughter("electron1"));
@@ -819,19 +819,19 @@ HiZeeAnalyzer::fillGenInfo()
   if (collGenParticles.isValid()) {
     for(std::vector<reco::GenParticle>::const_iterator it=collGenParticles->begin(); it!=collGenParticles->end();++it) {
 
-			if (Gen_QQ_size >= Max_QQ_size) {
-				std::cout << "Too many dielectrons: " << Gen_QQ_size << std::endl;
-				std::cout << "Maximum allowed: " << Max_QQ_size << std::endl;
-				return;
-			}
+      if (Gen_QQ_size >= Max_QQ_size) {
+        std::cout << "Too many dielectrons: " << Gen_QQ_size << std::endl;
+        std::cout << "Maximum allowed: " << Max_QQ_size << std::endl;
+        return;
+      }
 
-			if (Gen_ele_size >= Max_ele_size) {
-				std::cout << "Too many electrons: " << Gen_ele_size << std::endl;
-				std::cout << "Maximum allowed: " << Max_ele_size << std::endl;
-				return;
-			}
+      if (Gen_ele_size >= Max_ele_size) {
+        std::cout << "Too many electrons: " << Gen_ele_size << std::endl;
+        std::cout << "Maximum allowed: " << Max_ele_size << std::endl;
+        return;
+      }
 
-			const reco::GenParticle* gen = &(*it);
+      const reco::GenParticle* gen = &(*it);
       if (DEBUG) {
         if (abs(gen->pdgId()) == 11) {
           cout << "Electron " << gen->pdgId() << " status " << gen->status() << " pT " << gen->pt() << " eta " << gen->eta() << " phi "  << gen->phi() << " mass " << gen->mass() << endl;
@@ -871,7 +871,7 @@ HiZeeAnalyzer::fillGenInfo()
         }
       }
 
-			// if (abs(gen->pdgId()) == _z0PDG  && gen->status() == 2) {
+      // if (abs(gen->pdgId()) == _z0PDG  && gen->status() == 2) {
       if (abs(gen->pdgId()) == _z0PDG  && gen->status() == 3) { // so, with the generation of Zs we have right now, the generated status of the Zs that decay into electrons is 3
         TLorentzVector vZ = lorentzMomentum(gen->p4());
         new((*Gen_QQ_4mom)[Gen_QQ_size])TLorentzVector(vZ);
@@ -881,7 +881,7 @@ HiZeeAnalyzer::fillGenInfo()
           if ( abs(genElectron1->pdgId()) == 11 && abs(genElectron2->pdgId()) == 11 && (genElectron1->status() == 1 || genElectron1->status() == 3) && (genElectron2->status() == 1 || genElectron2->status() == 3) ) {
             TLorentzVector vElectron1 = lorentzMomentum(genElectron1->p4());
             TLorentzVector vElectron2 = lorentzMomentum(genElectron2->p4());
-			
+      
             if (genElectron1->charge() > genElectron2->charge()) {
               new((*Gen_QQ_elepl_4mom)[Gen_QQ_size])TLorentzVector(vElectron1);
               new((*Gen_QQ_elemi_4mom)[Gen_QQ_size])TLorentzVector(vElectron2);
@@ -920,17 +920,17 @@ HiZeeAnalyzer::fillRecoElectrons()
        const pat::Electron* electron = &(*it);
        if (isElectronInAccept(electron)) cout << "Electron " << num++ << " has pt " << electron->pt() << " eta " << electron->eta() << " and phi " << electron->phi() << endl;
       }
-			
-			if (recoElectron.isValid()) {
-				// now look at the gsf electron collection:
-				if (recoElectron->size()!=0) cout << recoElectron->size() << " electrons in recoElectron" << endl;
-				num = 0;
-				for(vector<reco::GsfElectron>::const_iterator it=recoElectron->begin();it!=recoElectron->end();++it) {
-				 const reco::GsfElectron* electron = &(*it);
-				 if (isElectronInAccept(electron)) cout << "Electron " << num++ << " has pt " << electron->pt() << " eta " << electron->eta() << " and phi " << electron->phi() << endl;
-				}
+      
+      if (recoElectron.isValid()) {
+        // now look at the gsf electron collection:
+        if (recoElectron->size()!=0) cout << recoElectron->size() << " electrons in recoElectron" << endl;
+        num = 0;
+        for(vector<reco::GsfElectron>::const_iterator it=recoElectron->begin();it!=recoElectron->end();++it) {
+         const reco::GsfElectron* electron = &(*it);
+         if (isElectronInAccept(electron)) cout << "Electron " << num++ << " has pt " << electron->pt() << " eta " << electron->eta() << " and phi " << electron->phi() << endl;
+        }
       } else cout << "UNABLE TO FIND RECO COLLECTION!!!" << endl;
-		}
+    }
     
     for(vector<pat::Electron>::const_iterator it=collElectron->begin();it!=collElectron->end();++it) {
       const pat::Electron* electron = &(*it);
@@ -956,7 +956,7 @@ HiZeeAnalyzer::fillRecoElectrons()
               }
             }
           }
-	  // apparently matching by path gives false positives so we use matching by filter for all triggers for which we know the filter name
+    // apparently matching by path gives false positives so we use matching by filter for all triggers for which we know the filter name
           if ( eleHLTMatchesPath.size() > 0 ) {
             trigBits += pow(2,iTr-1);
           }
@@ -1058,7 +1058,7 @@ HiZeeAnalyzer::InitTree()
   myTree->Branch("Reco_QQ_elemi_iso03Hcal",Reco_QQ_elemi_iso03Hcal,"Reco_QQ_elemi_iso03Hcal[Reco_QQ_size]/F");
   myTree->Branch("Reco_QQ_elemi_dxy",Reco_QQ_elemi_dxy,"Reco_QQ_elemi_dxy[Reco_QQ_size]/F");
   myTree->Branch("Reco_QQ_elemi_dz",Reco_QQ_elemi_dz,"Reco_QQ_elemi_dz[Reco_QQ_size]/F");
-	
+  
   myTree->Branch("Reco_QQ_trig", Reco_QQ_trig,   "Reco_QQ_trig[Reco_QQ_size]/I");
   myTree->Branch("Reco_QQ_VtxProb", Reco_QQ_VtxProb,   "Reco_QQ_VtxProb[Reco_QQ_size]/F");
 
